@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.11.2
 LABEL maintainer="Luke Tainton <luke@tainton.uk>"
 LABEL org.opencontainers.image.source="https://github.com/luketainton/webexmemebot"
 USER root
