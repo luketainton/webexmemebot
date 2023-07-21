@@ -13,6 +13,6 @@ RUN mkdir -p /.local && \
 COPY requirements.txt /run/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT ["python3", "-B", "-m", "app.main"]
+ENTRYPOINT ["python3", "-B", "-m", "webexmemebot.main"]
 
-COPY webexmemebot /run/app
+COPY webexmemebot /run/webexmemebot
