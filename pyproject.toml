@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "webexmemebot"
+version = "0.1.0"
+description = "Webex-based meme generation bot using memegen.link."
+authors = ["luketainton"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.2"
+webex-bot = "^0.4.0"
+pillow = "^10.0.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+coverage = "^7.2.7"
+pylint = "^2.17.4"
+pylint-exit = "^1.2.0"
+pytest = "^7.4.0"
+pre-commit = "^3.3.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+meme = "webexmemebot.main:main"
