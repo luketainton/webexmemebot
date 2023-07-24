@@ -1,5 +1,3 @@
-import json
-
 from webex_bot.models.command import Command
 from webex_bot.models.response import Response, response_from_adaptive_card
 from webexteamssdk.models.cards import (
@@ -46,14 +44,16 @@ class MakeMemeCommand(Command):
                                 size=FontSize.MEDIUM,
                             ),
                             TextBlock(
-                                "This bot uses memegen.link to generate memes.",
+                                "This bot uses memegen.link to generate memes. Click 'View Templates' to view available templates.",
                                 weight=FontWeight.LIGHTER,
                                 size=FontSize.SMALL,
+                                wrap=True,
                             ),
                             TextBlock(
-                                "Click 'View Templates' to view available templates.",
+                                "Both fields are required. If you do not want to specify a value, please type a space.",
                                 weight=FontWeight.LIGHTER,
                                 size=FontSize.SMALL,
+                                wrap=True,
                             ),
                         ],
                     ),
@@ -68,8 +68,7 @@ class MakeMemeCommand(Command):
                                 id="meme_type",
                                 isMultiSelect=False,
                                 choices=[
-                                    Choice(title=x["name"], value=x["choiceval"])
-                                    for x in TEMPLATES
+                                    Choice(title=x["name"], value=x["choiceval"]) for x in TEMPLATES
                                 ],
                             ),
                             Text(id="text_top", placeholder="Top Text", maxLength=100),

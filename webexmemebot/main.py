@@ -4,8 +4,7 @@ import os
 
 from webex_bot.webex_bot import WebexBot
 
-from webexmemebot import exit, meme
-
+from webexmemebot import close, meme
 
 WBX_API_KEY: str = os.environ["WEBEX_API_KEY"]
 
@@ -21,10 +20,10 @@ def create_bot() -> WebexBot:
     return bot
 
 
-def main():
+def main() -> None:
     bot: WebexBot = create_bot()
     bot.add_command(meme.MakeMemeCommand())
-    bot.add_command(exit.ExitCommand())
+    bot.add_command(close.ExitCommand())
     bot.commands.remove(bot.help_command)
     bot.help_command = meme.MakeMemeCommand()
     bot.run()

@@ -24,38 +24,30 @@ def get_templates() -> list[dict]:
     return templates
 
 
+def format_meme_string(input_string: str) -> str:
+    # https://memegen.link/#special-characters
+    out_string: str = input_string.replace("_", "__")
+    out_string: str = out_string.replace("-", "--")
+    out_string: str = out_string.replace(" ", "_")
+    out_string: str = out_string.replace("?", "~q")
+    out_string: str = out_string.replace("&", "~a")
+    out_string: str = out_string.replace("%", "~p")
+    out_string: str = out_string.replace("#", "~h")
+    out_string: str = out_string.replace("/", "~s")
+    out_string: str = out_string.replace("\\", "~b")
+    out_string: str = out_string.replace("<", "~l")
+    out_string: str = out_string.replace(">", "~g")
+    out_string: str = out_string.replace('"', "''")
+    return out_string
+
+
 def generate_api_url(template: str, top_str: str, btm_str: str) -> str:
+    tmpl_name: str
+    tmpl_ext: str
     tmpl_name, tmpl_ext = template.split(".")
 
-    # https://memegen.link/#special-characters
+    top_str = format_meme_string(top_str)
+    btm_str = format_meme_string(btm_str)
 
-    top_str = top_str.replace("_", "__")
-    top_str = top_str.replace("-", "--")
-    top_str = top_str.replace(" ", "_")
-    top_str = top_str.replace("?", "~q")
-    top_str = top_str.replace("&", "~a")
-    top_str = top_str.replace("%", "~p")
-    top_str = top_str.replace("#", "~h")
-    top_str = top_str.replace("/", "~s")
-    top_str = top_str.replace("\\", "~b")
-    top_str = top_str.replace("<", "~l")
-    top_str = top_str.replace(">", "~g")
-    top_str = top_str.replace('"', "''")
-
-    btm_str = btm_str.replace("_", "__")
-    btm_str = btm_str.replace("-", "--")
-    btm_str = btm_str.replace(" ", "_")
-    btm_str = btm_str.replace("?", "~q")
-    btm_str = btm_str.replace("&", "~a")
-    btm_str = btm_str.replace("%", "~p")
-    btm_str = btm_str.replace("#", "~h")
-    btm_str = btm_str.replace("/", "~s")
-    btm_str = btm_str.replace("\\", "~b")
-    btm_str = btm_str.replace("<", "~l")
-    btm_str = btm_str.replace(">", "~g")
-    btm_str = btm_str.replace('"', "''")
-
-    url: str = (
-        f"https://api.memegen.link/images/{tmpl_name}/{top_str}/{btm_str}.{tmpl_ext}"
-    )
+    url: str = f"https://api.memegen.link/images/{tmpl_name}/{top_str}/{btm_str}.{tmpl_ext}"
     return url
