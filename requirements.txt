@@ -163,9 +163,9 @@ requests==2.31.0 \
 urllib3==2.0.4 \
     --hash=sha256:8d22f86aae8ef5e410d4f539fde9ce6b2113a001bb4d189e0aed70642d602b11 \
     --hash=sha256:de7df1803967d2c2a98e4b11bb7d6bd9210474c46e8a0401514e3a42a75ebde4
-webex-bot==0.4.0 \
-    --hash=sha256:67d41c073beaf2121e33947e1c64b81bff70a2ea36b5ae673cf8ff542aeffabc \
-    --hash=sha256:d0cf7f04201baa5e49f76d51fd28a7eba811ebd6c8528041016f73aa21bb712f
+webex-bot==0.4.1 \
+    --hash=sha256:b538254cc6df03ff999a6cadcac4a0f5be53d76373d0f41375e3c716be47aa54 \
+    --hash=sha256:cbd8d2135b5f32eef342c7f90c447387426603a3718032d4a457c02c28a9a906
 webexteamssdk==1.6.1 \
     --hash=sha256:52a7f9d515cd3d53a853e679e16572ec6ca036a223e35b14fea14c99f492a6a4 \
     --hash=sha256:bbc7672f381b26fb22d0d03f87d131a2fa1e7d54c2f37f2e4cd28d725b8b5dfb
