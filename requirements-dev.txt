@@ -168,7 +168,7 @@ pre-commit==3.4.0 \
 pylint-exit==1.2.0 \
     --hash=sha256:65c9e7856e9058705a92d7c45628d604b2a4b8ee2b3c18a7303be77f9ed87cbe \
     --hash=sha256:b6ad02884c01c5560a5275079fe5a6c792afff90ecccf0c02513e1547ee280b0
-pylint==2.17.5 \
+pylint==2.17.7 \
     --hash=sha256:73995fb8216d3bed149c8d51bba25b2c52a8251a2c8ac846ec668ce38fab5413 \
     --hash=sha256:f7b601cbc06fef7e62a754e2b41294c2aa31f1cb659624b9a85bcba29eaf8252
 pytest==7.4.2 \
