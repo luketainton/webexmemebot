@@ -33,7 +33,7 @@ click==8.1.7 \
 colorama==0.4.6 ; sys_platform == "win32" or platform_system == "Windows" \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
-coverage==7.3.1 \
+coverage==7.3.2 \
     --hash=sha256:025ded371f1ca280c035d91b43252adbb04d2aea4c7105252d3cbc227f03b375 \
     --hash=sha256:04312b036580ec505f2b77cbbdfb15137d5efdfade09156961f5277149f5e344 \
     --hash=sha256:0575c37e207bb9b98b6cf72fdaaa18ac909fb3d153083400c2d48e2e6d28bd8e \
