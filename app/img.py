@@ -1,6 +1,22 @@
 import requests
 
 
+CHAR_REPLACEMENTS: list = [
+    ["_", "__"],
+    ["-", "--"],
+    [" ", "_"],
+    ["?", "~q"],
+    ["&", "~a"],
+    ["%", "~p"],
+    ["#", "~h"],
+    ["/", "~s"],
+    ["\\", "~b"],
+    ["<", "~l"],
+    [">", "~g"],
+    ['"', "''"],
+]
+
+
 def get_templates() -> list[dict]:
     url: str = "https://api.memegen.link/templates"
     req: requests.Response = requests.get(url=url, timeout=5)
@@ -26,18 +42,9 @@ def get_templates() -> list[dict]:
 
 def format_meme_string(input_string: str) -> str:
     # https://memegen.link/#special-characters
-    out_string: str = input_string.replace("_", "__")
-    out_string: str = out_string.replace("-", "--")
-    out_string: str = out_string.replace(" ", "_")
-    out_string: str = out_string.replace("?", "~q")
-    out_string: str = out_string.replace("&", "~a")
-    out_string: str = out_string.replace("%", "~p")
-    out_string: str = out_string.replace("#", "~h")
-    out_string: str = out_string.replace("/", "~s")
-    out_string: str = out_string.replace("\\", "~b")
-    out_string: str = out_string.replace("<", "~l")
-    out_string: str = out_string.replace(">", "~g")
-    out_string: str = out_string.replace('"', "''")
+    out_string: str = input_string
+    for char_replacement in CHAR_REPLACEMENTS:
+        out_string: str = out_string.replace(char_replacement[0], char_replacement[1])
     return out_string
 
 

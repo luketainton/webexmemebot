@@ -4,7 +4,7 @@ import os
 
 from webex_bot.webex_bot import WebexBot
 
-from webexmemebot import close, meme
+from app import close, meme
 
 WBX_API_KEY: str = os.environ["WEBEX_API_KEY"]
 

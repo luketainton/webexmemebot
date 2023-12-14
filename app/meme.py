@@ -13,7 +13,7 @@ from webexteamssdk.models.cards import (
 )
 from webexteamssdk.models.cards.actions import Submit, OpenUrl
 
-from webexmemebot import img
+from app import img
 
 
 TEMPLATES = img.get_templates()
