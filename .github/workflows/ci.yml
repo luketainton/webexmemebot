@@ -11,6 +11,15 @@ on:
       - '.github/CODEOWNERS'
       - '.github/renovate.json'
       - '.github/dependabot.yml'
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE.md'
+      - '.gitignore'
+      - '.github/CODEOWNERS'
+      - '.github/renovate.json'
+      - '.github/dependabot.yml'
 
 jobs:
   pythonci:
