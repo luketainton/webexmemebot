@@ -10,7 +10,7 @@ pyjwt==2.8.0
 pyreadline3==3.4.1 ; sys_platform == "win32" and python_full_version == "3.11.2"
 requests-toolbelt==1.0.0
 requests==2.31.0
-urllib3==2.1.0
+urllib3==2.2.0
 webex-bot==0.4.1
 webexteamssdk==1.6.1
 websockets==10.2
