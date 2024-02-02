@@ -1,5 +1,5 @@
 backoff==2.2.1
-certifi==2023.11.17
+certifi==2024.2.2
 charset-normalizer==3.3.2
 coloredlogs==15.0.1
 future==0.18.3
