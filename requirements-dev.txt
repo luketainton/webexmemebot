@@ -23,7 +23,7 @@ pylint-exit==1.2.0
 pylint==3.0.3
 pytest==8.0.0
 pyyaml==6.0.1
-setuptools==69.0.3
+setuptools==69.1.0
 tomlkit==0.12.3
 virtualenv==20.25.0
 wrapt==1.16.0
