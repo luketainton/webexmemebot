@@ -16,7 +16,7 @@ coverage = "^7.2.7"
 pylint = "^3.0.0"
 pylint-exit = "^1.2.0"
 pytest = "^8.0.0"
-pre-commit = "^3.6.1"
+pre-commit = "^3.6.2"
 
 [build-system]
 requires = ["poetry-core"]
