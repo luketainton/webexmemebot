@@ -42,3 +42,8 @@ updates:
       include: "scope"
     labels:
       - "dependencies"
+    groups:
+      pylint:
+        patterns:
+          - "pylint"
+          - "astroid"
