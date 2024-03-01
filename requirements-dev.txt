@@ -20,7 +20,7 @@ platformdirs==4.2.0
 pluggy==1.4.0
 pre-commit==3.6.2
 pylint-exit==1.2.0
-pylint==3.0.3
+pylint==3.1.0
 pytest==8.0.2
 pyyaml==6.0.1
 setuptools==69.1.1
