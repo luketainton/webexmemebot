@@ -6,7 +6,7 @@ colorama==0.4.6 ; sys_platform == "win32" or platform_system == "Windows"
 coverage==7.4.4
 dill==0.3.8
 distlib==0.3.8
-filelock==3.13.1
+filelock==3.13.2
 identify==2.5.35
 iniconfig==2.0.0
 isort==5.13.2
