@@ -127,7 +127,7 @@ class MakeMemeCallback(Command):
 
     def execute(self, message, attachment_actions, activity) -> Response | None:
         if self.error:
-            return
+            return None
 
         self.meme_filename: str = img.generate_api_url(
             self.meme, self.text_top, self.text_bottom
