@@ -20,6 +20,7 @@ TEMPLATES = img.get_templates()
 
 
 class MakeMemeCommand(Command):
+    """Class for initial Webex interactive card."""
     def __init__(self) -> None:
         super().__init__(
             command_keyword="/meme",
@@ -98,6 +99,7 @@ class MakeMemeCommand(Command):
 
 
 class MakeMemeCallback(Command):
+    """Class to process user data and return meme."""
     def __init__(self) -> None:
         super().__init__(
             card_callback_keyword="make_meme_callback_rbamzfyx",
@@ -123,19 +125,21 @@ class MakeMemeCallback(Command):
 
         return "Generating your meme..."
 
-    def execute(self, message, attachment_actions, activity) -> str:
-        if not self.error:
-            self.meme_filename: str = img.generate_api_url(
-                self.meme, self.text_top, self.text_bottom
-            )
-            msg: Response = Response(
-                attributes={
-                    "roomId": activity["target"]["globalId"],
-                    "parentId": "",
-                    "files": [self.meme_filename],
-                }
-            )
-            return msg
+    def execute(self, message, attachment_actions, activity) -> Response | None:
+        if self.error:
+            return
+
+        self.meme_filename: str = img.generate_api_url(
+            self.meme, self.text_top, self.text_bottom
+        )
+        msg: Response = Response(
+            attributes={
+                "roomId": activity["target"]["globalId"],
+                "parentId": "",
+                "files": [self.meme_filename],
+            }
+        )
+        return msg
 
     def post_execute(self, message, attachment_actions, activity) -> None:
         return
