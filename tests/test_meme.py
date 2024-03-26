@@ -2,8 +2,6 @@
 
 """Provides test cases for webexmemebot/img.py."""
 
-import pytest  # pragma: no cover
-
 from webex_bot.models.response import Response  # pragma: no cover
 
 from app import meme  # pragma: no cover
