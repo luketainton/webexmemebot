@@ -2,7 +2,7 @@
 
 """Provides test cases for webexmemebot/img.py."""
 
-import pytest
+import pytest  # pragma: no cover
 
 from app import img  # pragma: no cover
 
