@@ -4,7 +4,7 @@ charset-normalizer==3.3.2
 coloredlogs==15.0.1
 future==1.0.0
 humanfriendly==10.0
-idna==3.6
+idna==3.7
 pillow==10.3.0
 pyjwt==2.8.0
 pyreadline3==3.4.1 ; sys_platform == "win32" and python_full_version == "3.11.2"
