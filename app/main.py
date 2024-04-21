@@ -1,18 +1,29 @@
 #!/usr/local/bin/python3
 
-import os
+import sentry_sdk
+from sentry_sdk.integrations.stdlib import StdlibIntegration
 
 from webex_bot.webex_bot import WebexBot
 
 from app import close, meme
+from app.config import config
 
-WBX_API_KEY: str = os.environ["WEBEX_API_KEY"]
+
+if config.sentry_enabled:
+    apm = sentry_sdk.init(
+        dsn=config.sentry_dsn,
+        enable_tracing=True,
+        environment=config.environment,
+        release=config.version,
+        integrations=[StdlibIntegration()],
+        spotlight=True
+    )
 
 
 def create_bot() -> WebexBot:
     """Create a Bot object."""
     bot = WebexBot(
-        teams_bot_token=WBX_API_KEY,
+        teams_bot_token=config.webex_token,
         approved_domains=["cisco.com"],
         bot_name="MemeBot",
         include_demo_commands=False,
