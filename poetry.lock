@@ -881,13 +881,13 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [[package]]
 name = "webex-bot"
-version = "0.4.7"
+version = "0.5.0"
 description = "Python package for a Webex Bot based on websockets."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "webex_bot-0.4.7-py2.py3-none-any.whl", hash = "sha256:ba3d208b8c96f77bba71b7eaadd5fdd1067ff61c1529b6b1978787f56b08bc2e"},
-    {file = "webex_bot-0.4.7.tar.gz", hash = "sha256:06e61fa1235c85fcba2a62f9b19574619fe3403d0e8e2f041970db71d3d256ba"},
+    {file = "webex_bot-0.5.0-py2.py3-none-any.whl", hash = "sha256:997a65eb8b98be6538c20f06eb9a4846e9caab83115e091a0c444d59662cef3f"},
+    {file = "webex_bot-0.5.0.tar.gz", hash = "sha256:f874b166a58e208425ddff6f9f5d741c0e5805b2ddd4a657c099b316b76bc03b"},
 ]
 
 [package.dependencies]
@@ -995,4 +995,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.2"
-content-hash = "0c304ad511718093d0b65b939a70e7c883dc8fc60253a7e53ab31134e36e1cad"
+content-hash = "be28dbdb69a24d6eee2da9e6867d84ac3cf8a5ace5c6bd6797a78b07cd946678"
