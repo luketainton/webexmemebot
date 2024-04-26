@@ -881,13 +881,13 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [[package]]
 name = "webex-bot"
-version = "0.4.7"
+version = "0.5.1"
 description = "Python package for a Webex Bot based on websockets."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "webex_bot-0.4.7-py2.py3-none-any.whl", hash = "sha256:ba3d208b8c96f77bba71b7eaadd5fdd1067ff61c1529b6b1978787f56b08bc2e"},
-    {file = "webex_bot-0.4.7.tar.gz", hash = "sha256:06e61fa1235c85fcba2a62f9b19574619fe3403d0e8e2f041970db71d3d256ba"},
+    {file = "webex_bot-0.5.1-py2.py3-none-any.whl", hash = "sha256:f77b239fb8bb4ab2524410a8132a9adef69f3f504c24ceb46ab2d8fae72193d3"},
+    {file = "webex_bot-0.5.1.tar.gz", hash = "sha256:bb2da7080633e6a3429cdca299e3bfa56fad2d45071de80fcc2baf6b6e1fb018"},
 ]
 
 [package.dependencies]
@@ -895,6 +895,9 @@ backoff = "*"
 coloredlogs = "*"
 webexteamssdk = "1.6.1"
 websockets = "11.0.3"
+
+[package.extras]
+proxy = ["websockets-proxy (>=0.1.1)"]
 
 [[package]]
 name = "webexteamssdk"
@@ -995,4 +998,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.2"
-content-hash = "0c304ad511718093d0b65b939a70e7c883dc8fc60253a7e53ab31134e36e1cad"
+content-hash = "5f7841af503e70a63fd1c8055af63d448f17521bd8c0d5110f01460b9c8db66c"
