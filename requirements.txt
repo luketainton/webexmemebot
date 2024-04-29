@@ -10,7 +10,7 @@ pyjwt==2.8.0
 pyreadline3==3.4.1 ; sys_platform == "win32" and python_full_version == "3.11.2"
 requests-toolbelt==1.0.0
 requests==2.31.0
-sentry-sdk==1.45.0
+sentry-sdk==2.0.1
 urllib3==2.2.1
 webex-bot==0.4.7
 webexteamssdk==1.6.1
