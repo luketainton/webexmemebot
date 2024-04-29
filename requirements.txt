@@ -12,6 +12,6 @@ requests-toolbelt==1.0.0
 requests==2.31.0
 sentry-sdk==2.0.1
 urllib3==2.2.1
-webex-bot==0.4.7
+webex-bot==0.5.1
 webexteamssdk==1.6.1
 websockets==11.0.3
