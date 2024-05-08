@@ -24,6 +24,6 @@ pylint==3.1.0
 pytest==8.2.0
 pyyaml==6.0.1
 setuptools==69.5.1
-tomlkit==0.12.4
+tomlkit==0.12.5
 virtualenv==20.26.1
 wrapt==1.16.0
