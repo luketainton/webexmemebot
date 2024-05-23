@@ -9,7 +9,7 @@ readme = "README.md"
 python = "^3.11.2"
 webex-bot = "^0.5.1"
 pillow = "^10.3.0"
-sentry-sdk = "^2.2.1"
+sentry-sdk = "^2.3.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
