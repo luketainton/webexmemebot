@@ -13,5 +13,5 @@ requests==2.32.3
 sentry-sdk==2.7.1
 urllib3==2.2.2
 webex-bot==0.5.1
-webexteamssdk==1.6.1
+webexteamssdk==1.7
 websockets==11.0.3
