@@ -13,5 +13,5 @@ sentry-sdk==2.7.1
 tomlkit==0.12.5
 urllib3==2.2.2
 webex-bot==0.5.1
-webexteamssdk==1.7
+webexteamssdk==1.6.1
 websockets==12.0
