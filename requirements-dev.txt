@@ -1,4 +1,4 @@
-astroid==3.1.0
+astroid==3.2.2
 black==24.4.2
 cfgv==3.4.0
 click==8.1.7
@@ -20,9 +20,10 @@ platformdirs==4.2.2
 pluggy==1.5.0
 pre-commit==3.7.1
 pylint-exit==1.2.0
-pylint==3.1.0
+pylint==3.2.5
+pylint-exit==1.2.0
 pytest==8.2.2
-pyyaml==6.0.1
+PyYAML==6.0.1
 setuptools==70.2.0
 tomlkit==0.12.5
 virtualenv==20.26.3

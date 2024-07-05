@@ -6,12 +6,12 @@ future==1.0.0
 humanfriendly==10.0
 idna==3.7
 pillow==10.4.0
-pyjwt==2.8.0
-pyreadline3==3.4.1 ; sys_platform == "win32" and python_full_version == "3.11.2"
-requests-toolbelt==1.0.0
+PyJWT==1.7.1
 requests==2.32.3
+requests-toolbelt==1.0.0
 sentry-sdk==2.7.1
+tomlkit==0.12.5
 urllib3==2.2.2
 webex-bot==0.5.1
-webexteamssdk==1.6.1
-websockets==11.0.3
+webexteamssdk==1.7
+websockets==12.0
