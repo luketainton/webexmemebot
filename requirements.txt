@@ -10,7 +10,7 @@ PyJWT==2.8.0
 requests==2.32.3
 requests-toolbelt==1.0.0
 sentry-sdk==2.7.1
-tomlkit==0.12.5
+tomlkit==0.13.0
 urllib3==2.2.2
 webex-bot==0.5.1
 webexteamssdk==1.6.1
