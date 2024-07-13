@@ -1,4 +1,4 @@
-astroid==3.2.2
+astroid==3.2.3
 black==24.4.2
 cfgv==3.4.0
 click==8.1.7
@@ -24,8 +24,8 @@ pylint==3.2.5
 pylint-exit==1.2.0
 pytest==8.2.2
 PyYAML==6.0.1
-setuptools==70.2.0
-tomlkit==0.12.5
+setuptools==70.3.0
+tomlkit==0.13.0
 virtualenv==20.26.3
 wrapt==1.16.0
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
