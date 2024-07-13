@@ -14,4 +14,4 @@ jobs:
     needs: create_release
     uses: luketainton/gha-workflows/.github/workflows/build-push-attest-docker.yml@main
     with:
-        release: ${{ needs.create_release.outputs.new_tag }}
+        release: ${{ needs.create_release.outputs.release_name }}
