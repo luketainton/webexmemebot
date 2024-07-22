@@ -1,4 +1,4 @@
-astroid==3.2.3
+astroid==3.2.4
 black==24.4.2
 cfgv==3.4.0
 click==8.1.7
