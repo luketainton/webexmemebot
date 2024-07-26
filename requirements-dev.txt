@@ -22,7 +22,7 @@ pre-commit==3.7.1
 pylint-exit==1.2.0
 pylint==3.2.6
 pylint-exit==1.2.0
-pytest==8.3.1
+pytest==8.3.2
 PyYAML==6.0.1
 setuptools==71.1.0
 tomlkit==0.13.0
