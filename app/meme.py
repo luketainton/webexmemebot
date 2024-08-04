@@ -2,25 +2,25 @@ from webex_bot.models.command import Command
 from webex_bot.models.response import Response, response_from_adaptive_card
 from webexteamssdk.models.cards import (
     AdaptiveCard,
+    Choice,
+    Choices,
     Column,
     ColumnSet,
     FontSize,
     FontWeight,
     Text,
     TextBlock,
-    Choice,
-    Choices,
 )
-from webexteamssdk.models.cards.actions import Submit, OpenUrl
+from webexteamssdk.models.cards.actions import OpenUrl, Submit
 
 from app import img
-
 
 TEMPLATES = img.get_templates()
 
 
 class MakeMemeCommand(Command):
     """Class for initial Webex interactive card."""
+
     def __init__(self) -> None:
         super().__init__(
             command_keyword="/meme",
@@ -69,7 +69,8 @@ class MakeMemeCommand(Command):
                                 id="meme_type",
                                 isMultiSelect=False,
                                 choices=[
-                                    Choice(title=x["name"], value=x["choiceval"]) for x in TEMPLATES
+                                    Choice(title=x["name"], value=x["choiceval"])
+                                    for x in TEMPLATES
                                 ],
                             ),
                             Text(id="text_top", placeholder="Top Text", maxLength=100),
@@ -100,6 +101,7 @@ class MakeMemeCommand(Command):
 
 class MakeMemeCallback(Command):
     """Class to process user data and return meme."""
+
     def __init__(self) -> None:
         super().__init__(
             card_callback_keyword="make_meme_callback_rbamzfyx",

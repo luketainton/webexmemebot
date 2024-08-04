@@ -5,6 +5,7 @@ import os
 
 class Config:
     """Configuration module."""
+
     def __init__(self) -> None:
         """Configuration module."""
         self.__environment: str = os.environ.get("APP_LIFECYCLE", "DEV").upper()

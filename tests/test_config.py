@@ -2,12 +2,11 @@
 
 import os
 
-
 vars: dict = {
     "APP_VERSION": "dev",
     "WEBEX_API_KEY": "testing",
     "SENTRY_ENABLED": "false",
-    "SENTRY_DSN": "http://localhost"
+    "SENTRY_DSN": "http://localhost",
 }
 
 
@@ -15,7 +14,7 @@ for var, value in vars.items():
     os.environ[var] = value
 
 # needs to be imported AFTER environment variables are set
-from app.config import config  # pragma: no cover
+from app.config import config  # pragma: no cover  # noqa: E402
 
 
 def test_config() -> None:
