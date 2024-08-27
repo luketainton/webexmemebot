@@ -1,6 +1,5 @@
 import requests
 
-
 CHAR_REPLACEMENTS: list = [
     ["_", "__"],
     ["-", "--"],
@@ -56,5 +55,7 @@ def generate_api_url(template: str, top_str: str, btm_str: str) -> str:
     top_str = format_meme_string(top_str)
     btm_str = format_meme_string(btm_str)
 
-    url: str = f"https://api.memegen.link/images/{tmpl_name}/{top_str}/{btm_str}.{tmpl_ext}"
+    url: str = (
+        f"https://api.memegen.link/images/{tmpl_name}/{top_str}/{btm_str}.{tmpl_ext}"
+    )
     return url
