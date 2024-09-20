@@ -14,7 +14,7 @@ sentry-sdk = "^2.14.0"
 [tool.poetry.group.dev.dependencies]
 black = "^24.8.0"
 coverage = "^7.6.1"
-pylint = "^3.2.6"
+pylint = "^3.3.0"
 pylint-exit = "^1.2.0"
 pytest = "^8.3.3"
 pre-commit = "^3.8.0"
