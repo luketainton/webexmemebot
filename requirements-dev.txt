@@ -18,7 +18,7 @@ packaging==24.1
 pathspec==0.12.1
 platformdirs==4.3.6
 pluggy==1.5.0
-pre-commit==3.8.0
+pre-commit==4.0.1
 pylint==3.2.6
 pylint-exit==1.2.0
 pytest==8.3.3
