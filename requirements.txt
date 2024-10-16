@@ -5,7 +5,7 @@ coloredlogs==15.0.1
 future==1.0.0
 humanfriendly==10.0
 idna==3.10
-pillow==10.4.0
+pillow==11.0.0
 PyJWT==2.9.0
 requests==2.32.3
 requests-toolbelt==1.0.0
