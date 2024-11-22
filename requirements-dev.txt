@@ -26,5 +26,5 @@ PyYAML==6.0.2
 setuptools==75.6.0
 tomlkit==0.13.2
 virtualenv==20.27.1
-wrapt==1.16.0
+wrapt==1.17.0
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
