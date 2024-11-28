@@ -3,8 +3,10 @@ LABEL maintainer="Luke Tainton <luke@tainton.uk>"
 LABEL org.opencontainers.image.source="https://github.com/luketainton/webexmemebot"
 USER root
 
-ENV PYTHONPATH="/run:/usr/local/lib/python3.11/lib-dynload:/usr/local/lib/python3.11/site-packages:/usr/local/lib/python3.11"
+ENV PYTHONPATH="/run:/usr/local/lib/python3.13/lib-dynload:/usr/local/lib/python3.13/site-packages:/usr/local/lib/python3.13"
 WORKDIR /run
+
+COPY imp.py /run/imp.py
 
 RUN mkdir -p /.local && \
     chmod -R 777 /.local && \
