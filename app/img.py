@@ -18,7 +18,7 @@ CHAR_REPLACEMENTS: list = [
 
 def get_templates() -> list[dict]:
     url: str = "https://api.memegen.link/templates"
-    req: requests.Response = requests.get(url=url, timeout=5)
+    req: requests.Response = requests.get(url=url, timeout=10)
     req.raise_for_status()
     data: dict = req.json()
     templates: list = []
