@@ -17,7 +17,7 @@ coverage = "^7.6.8"
 isort = "^5.13.2"
 pylint = "^3.3.2"
 pylint-exit = "^1.2.0"
-pytest = "^8.3.3"
+pytest = "^8.3.4"
 pre-commit = "^4.0.1"
 
 [build-system]
