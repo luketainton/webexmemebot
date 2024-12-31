@@ -1,0 +1,133 @@
+name: Release
+on:
+  schedule:
+    - cron: "0 9 * * 0"
+
+jobs:
+  test:
+    uses: https://git.tainton.uk/public/webexmemebot/src/branch/main/.gitea/workflows/ci.yml
+
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_name: ${{ steps.tag_version.outputs.new_tag }}
+      success: ${{ steps.set_flag.outputs.success }}
+    steps:
+      - uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0
+
+      - name: Changes since last tag
+        id: changes
+        run: |
+          CHANGES=$(git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline)
+          echo "$CHANGES"
+          if [ -z "$CHANGES" ]; then echo "changes=false" >> "$GITEA_OUTPUT"; else echo "changes=true" >> "$GITEA_OUTPUT"; fi
+
+      - name: Bump version and push tag
+        id: tag_version
+        if: steps.changes.outputs.changes == 'true'
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ gitea.token }}
+          default_bump: minor
+          # default_bump: false
+
+      - name: Build Changelog
+        uses: mikepenz/release-changelog-builder-action@v4
+        id: build_changelog
+        env:
+          GITHUB_TOKEN: ${{ gitea.token }}
+        with:
+          configurationJson: |
+            {
+              "pr_template": "- #{{TITLE}} ([##{{NUMBER}}](#{{URL}}))",
+              "empty_template": "- no changes",
+              "categories": [
+                {
+                    "title": "## 💬 Other",
+                    "labels": ["type/other"]
+                },
+                {
+                    "title": "## 📦 Dependencies",
+                    "labels": ["type/dependencies"]
+                },
+                {
+                  "title": "## 🚀 Features",
+                  "labels": ["type/feature"]
+                },
+                {
+                  "title": "## 🐛 Bug Fixes",
+                  "labels": ["type/bugfix"]
+                },
+              ]
+            }
+
+      - name: Create release
+        id: create_release
+        uses: akkuman/gitea-release-action@v1
+        env:
+          NODE_OPTIONS: '--experimental-fetch' # if nodejs < 18
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.build_changelog.outputs.changelog }}
+
+      - name: Set success/fail flag
+        id: set_flag
+        if: steps.changes.outputs.changes == 'true'
+        run: if test "${{ steps.changes.outputs.changes }}" = "true"; then echo "success=true" >> "$GITHUB_OUTPUT"; else echo "success=false" >> "$GITHUB_OUTPUT"; fi
+
+  create_docker:
+    name: Create Docker Image
+    needs: create_release
+    if: ${{ needs.create_release.outputs.success == 'true' }}
+    outputs:
+      success: ${{ steps.set_flag.outputs.success }}
+    with:
+        release: ${{ needs.create_release.outputs.release_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Gitea Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: git.tainton.uk
+          username: ${{ gitea.actor }}
+          password: ${{ gitea.token }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            git.tainton.uk/${{ gitea.repository }}
+          tags: |
+            type=semver,pattern=v{{version}},value=${{ inputs.release }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            git.tainton.uk/${{ gitea.repository }}:latest
+            git.tainton.uk/${{ gitea.repository }}:${{ inputs.release }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: git.tainton.uk/${{ gitea.repository }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+
+      - name: Set success flag
+        id: set_flag
+        run: echo "success=true" >> "$GITHUB_OUTPUT"

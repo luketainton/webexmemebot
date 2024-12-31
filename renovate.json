@@ -1,0 +1,42 @@
+{
+  "assignAutomerge": true,
+  "assigneesFromCodeOwners": true,
+  "dependencyDashboardAutoclose": true,
+  "extends": [
+    "config:base"
+  ],
+  "labels": [
+    "type/dependencies"
+  ],
+  "packageRules": [
+    {
+      "labels": [
+        "linting"
+      ],
+      "matchPackagePatterns": [
+        "black",
+        "pylint"
+      ]
+    },
+    {
+      "labels": [
+        "unit-tests"
+      ],
+      "matchPackagePatterns": [
+        "coverage",
+        "pytest"
+      ]
+    }
+  ],
+  "platformCommit": true,
+  "rebaseWhen": "behind-base-branch",
+  "rollbackPrs": true,
+  "vulnerabilityAlerts": {
+    "commitMessagePrefix": "[SECURITY] ",
+    "enabled": true,
+    "labels": [
+      "security"
+    ],
+    "prCreation": "immediate"
+  }
+}
