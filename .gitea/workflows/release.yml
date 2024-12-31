@@ -2,6 +2,7 @@ name: Release
 on:
   schedule:
     - cron: "0 9 * * 0"
+    - cron: "50 23 * * 2"  # Testing
 
 jobs:
   test:
@@ -101,12 +102,20 @@ jobs:
           username: ${{ gitea.actor }}
           password: ${{ gitea.token }}
 
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: luketainton
+          password: ${{ secrets.GHCR_TOKEN }}
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
             git.tainton.uk/${{ gitea.repository }}
+            ghcr.io/luketainton/webexmemebot
           tags: |
             type=semver,pattern=v{{version}},value=${{ inputs.release }}
 
@@ -120,11 +129,13 @@ jobs:
           tags: |
             git.tainton.uk/${{ gitea.repository }}:latest
             git.tainton.uk/${{ gitea.repository }}:${{ inputs.release }}
+            ghcr.io/luketainton/webexmemebot:latest
+            ghcr.io/luketainton/webexmemebot:${{ inputs.release }}
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: git.tainton.uk/${{ gitea.repository }}
+          subject-name: ghcr.io/luketainton/webexmemebot
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
