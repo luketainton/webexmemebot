@@ -1,6 +1,6 @@
 {
   "ignorePaths": [
-      "archive/*"
+    "**/.archive/**"
   ],
   "assignAutomerge": true,
   "assigneesFromCodeOwners": true,
