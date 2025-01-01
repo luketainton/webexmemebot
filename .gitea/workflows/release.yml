@@ -36,8 +36,7 @@ jobs:
       - name: Get latest tag
         id: latesttag
         run: |
-          git fetch --tags
-          LATESTTAG=$(git -C ${{ gitea.workspace }} describe --tags --abbrev=0)
+          LATESTTAG=$(git describe --tags --abbrev=0)
           echo "latesttag=$LATESTTAG" >> "$GITEA_OUTPUT"
 
   test:
