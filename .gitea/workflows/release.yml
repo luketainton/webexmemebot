@@ -9,6 +9,12 @@ jobs:
   check_manual_trigger:
     runs-on: ubuntu-latest
     steps:
+      - name: Log event metadata
+        run: |
+          echo "Issue: ${{ gitea.event.issue.number }}"
+          echo "Comment: ${{ gitea.event.comment.body }}"
+          echo "User: ${{ gitea.event.comment.user.login }}"
+
       - name: Allow workflow
         if: contains(gitea.event.issue.number, '436')) && contains(gitea.event.comment.body, '/trigger-release') && contains(gitea.event.comment.user.login, 'luke')
         run: exit 0
