@@ -30,7 +30,7 @@ jobs:
     outputs:
       latesttag: ${{ steps.latesttag.outputs.latesttag }}
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
       - name: Get latest tag
@@ -54,7 +54,7 @@ jobs:
       success: ${{ steps.set_flag.outputs.success }}
       # srvurl: ${{ steps.set_srvurl.outputs.srvurl }}
     steps:
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
 
