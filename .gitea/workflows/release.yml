@@ -19,6 +19,10 @@ jobs:
         if: ${{ !contains(gitea.event.issue.number, '436') || !contains(gitea.event.comment.body, '/trigger-release') || !contains(gitea.event.comment.user.login, 'luke') }}
         run: exit 1
 
+      - name: Delete issue comment
+        run: |
+          curl -X DELETE -H "Authorization: token ${{ gitea.token }}" "${{ gitea.server_url }}/api/v1/repos/${{ gitea.repository }}/issues/comments/${{ gitea.event.comment.id }}"
+
   get_latest_tag:
     name: Get latest tag
     runs-on: ubuntu-latest
