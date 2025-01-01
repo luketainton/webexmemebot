@@ -3,7 +3,7 @@
   "assigneesFromCodeOwners": true,
   "dependencyDashboardAutoclose": true,
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "labels": [
     "type/dependencies"
@@ -13,22 +13,22 @@
       "labels": [
         "linting"
       ],
-      "matchPackagePatterns": [
-        "black",
-        "pylint"
+      "matchPackageNames": [
+        "/black/",
+        "/pylint/"
       ]
     },
     {
       "labels": [
         "unit-tests"
       ],
-      "matchPackagePatterns": [
-        "coverage",
-        "pytest"
+      "matchPackageNames": [
+        "/coverage/",
+        "/pytest/"
       ]
     }
   ],
-  "platformCommit": true,
+  "platformCommit": "enabled",
   "rebaseWhen": "behind-base-branch",
   "rollbackPrs": true,
   "vulnerabilityAlerts": {
