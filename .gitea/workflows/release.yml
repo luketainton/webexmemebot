@@ -52,7 +52,7 @@ jobs:
     outputs:
       release_name: ${{ steps.tag_version.outputs.new_tag }}
       success: ${{ steps.set_flag.outputs.success }}
-      srvurl: ${{ steps.set_srvurl.outputs.srvurl }}
+      # srvurl: ${{ steps.set_srvurl.outputs.srvurl }}
     steps:
       - uses: actions/checkout@v4.1.7
         with:
@@ -63,7 +63,44 @@ jobs:
         run: |
           CHANGES=$(git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline)
           echo "$CHANGES"
-          if [ -z "$CHANGES" ]; then echo "changes=false" >> "$GITEA_OUTPUT"; else echo "changes=true" >> "$GITEA_OUTPUT"; fi
+          $CHANGES_FEAT=$(echo "$CHANGES" | grep -i "feat")
+          $CHANGES_FIX=$(echo "$CHANGES" | grep -i "fix")
+          $CHANGES_DEP=$(echo "$CHANGES" | grep -i "dependencies")
+          $CHANGES_OTHER=$(echo "$CHANGES" | grep -i "other")
+          if [ -z "$CHANGES" ]
+          then
+            echo "changes=false" >> "$GITEA_OUTPUT"
+            echo "changes_feat=false" >> "$GITEA_OUTPUT"
+            echo "changes_fix=false" >> "$GITEA_OUTPUT"
+            echo "changes_dep=false" >> "$GITEA_OUTPUT"
+            echo "changes_other=false" >> "$GITEA_OUTPUT"
+          else
+            echo "changes=true" >> "$GITEA_OUTPUT"
+            echo "changes_feat=CHANGES_FEAT" >> "$GITEA_OUTPUT"
+            echo "changes_fix=CHANGES_FIX" >> "$GITEA_OUTPUT"
+            echo "changes_dep=CHANGES_DEP" >> "$GITEA_OUTPUT"
+            echo "changes_other=CHANGES_OTHER" >> "$GITEA_OUTPUT"
+          fi
+
+      - name: Create changelog
+        id: create_changelog
+        run: |
+          if test "${{ steps.changes.outputs.changes }}" = "true"
+          then
+            cat <<EOF >> changelog.md
+              ## 🚀 Features
+              $CHANGES_FEAT
+
+              ## 🐛 Bug Fixes
+              $CHANGES_FIX
+
+              ## 📦 Dependencies
+              $CHANGES_DEP
+
+              ## 💬 Other
+              $CHANGES_OTHER
+            EOF
+          fi
 
       - name: Set server URL
         id: set_srvurl
@@ -94,36 +131,36 @@ jobs:
       #     default_bump: minor
       #     # default_bump: false
 
-      - name: Build Changelog
-        uses: mikepenz/release-changelog-builder-action@v4
-        id: build_changelog
-        env:
-          GITHUB_TOKEN: ${{ gitea.token }}
-        with:
-          platform: "gitea"
-          configurationJson: |
-            {
-              "pr_template": "- #{{TITLE}} ([##{{NUMBER}}](#{{URL}}))",
-              "empty_template": "- no changes",
-              "categories": [
-                {
-                    "title": "## 💬 Other",
-                    "labels": ["type/other"]
-                },
-                {
-                    "title": "## 📦 Dependencies",
-                    "labels": ["type/dependencies"]
-                },
-                {
-                  "title": "## 🚀 Features",
-                  "labels": ["type/feature"]
-                },
-                {
-                  "title": "## 🐛 Bug Fixes",
-                  "labels": ["type/bugfix"]
-                },
-              ]
-            }
+      # - name: Build Changelog
+      #   uses: mikepenz/release-changelog-builder-action@v4
+      #   id: build_changelog
+      #   env:
+      #     GITHUB_TOKEN: ${{ gitea.token }}
+      #   with:
+      #     platform: "gitea"
+      #     configurationJson: |
+      #       {
+      #         "pr_template": "- #{{TITLE}} ([##{{NUMBER}}](#{{URL}}))",
+      #         "empty_template": "- no changes",
+      #         "categories": [
+      #           {
+      #               "title": "## 💬 Other",
+      #               "labels": ["type/other"]
+      #           },
+      #           {
+      #               "title": "## 📦 Dependencies",
+      #               "labels": ["type/dependencies"]
+      #           },
+      #           {
+      #             "title": "## 🚀 Features",
+      #             "labels": ["type/feature"]
+      #           },
+      #           {
+      #             "title": "## 🐛 Bug Fixes",
+      #             "labels": ["type/bugfix"]
+      #           },
+      #         ]
+      #       }
 
       - name: Create release
         id: create_release
@@ -133,7 +170,7 @@ jobs:
         with:
           tag: ${{ steps.get_next_version.outputs.tag }}
           name: ${{ steps.get_next_version.outputs.tag }}
-          body: ${{ steps.build_changelog.outputs.changelog }}
+          body_path: changelog.md
 
       - name: Set success/fail flag
         id: set_flag
