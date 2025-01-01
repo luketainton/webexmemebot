@@ -64,14 +64,27 @@ jobs:
           echo "$CHANGES"
           if [ -z "$CHANGES" ]; then echo "changes=false" >> "$GITEA_OUTPUT"; else echo "changes=true" >> "$GITEA_OUTPUT"; fi
 
-      - name: Bump version and push tag
-        id: tag_version
-        if: steps.changes.outputs.changes == 'true'
-        uses: mathieudutour/github-tag-action@v6.2
+      - name: Get next version
+        uses: TriPSs/conventional-changelog-action@v6
+        id: get_next_version
         with:
-          github_token: ${{ gitea.token }}
-          default_bump: minor
-          # default_bump: false
+          github-token: ${{ gitea.token }}
+          skip-commit: true
+          release-count: 1
+          output-file: false
+          create-summary: true
+          skip-on-empty: true
+          skip-version-file: true
+          skip-tag: true
+
+      # - name: Bump version and push tag
+      #   id: tag_version
+      #   if: steps.changes.outputs.changes == 'true'
+      #   uses: mathieudutour/github-tag-action@v6.2
+      #   with:
+      #     github_token: ${{ gitea.token }}
+      #     default_bump: minor
+      #     # default_bump: false
 
       - name: Build Changelog
         uses: mikepenz/release-changelog-builder-action@v4
@@ -109,8 +122,8 @@ jobs:
         env:
           NODE_OPTIONS: '--experimental-fetch' # if nodejs < 18
         with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: ${{ steps.tag_version.outputs.new_tag }}
+          tag: ${{ steps.get_next_version.outputs.tag }}
+          name: ${{ steps.get_next_version.outputs.tag }}
           body: ${{ steps.build_changelog.outputs.changelog }}
 
       - name: Set success/fail flag
