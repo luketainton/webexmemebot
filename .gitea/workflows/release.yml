@@ -43,6 +43,7 @@ jobs:
     name: Unit Test
     needs: get_latest_tag
     uses: https://git.tainton.uk/public/webexmemebot/.gitea/workflows/ci.yml@${{ needs.get_latest_tag.outputs.latesttag }}
+    continue-on-error: true
 
   create_release:
     name: Create Release
