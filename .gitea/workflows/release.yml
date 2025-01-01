@@ -61,16 +61,19 @@ jobs:
       - name: Changes since last tag
         id: changes
         run: |
+          rm -f .changes .changes_feat .changes_fix .changes_dep .changes_other
           git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline >> .changes
-          cat ".changes"
+          cat .changes
           if [[ -z $(grep '[^[:space:]]' .changes) ]] ; then
+            echo "changes=false"
             echo "changes=false" >> "$GITEA_OUTPUT"
           else
+            echo "changes=true"
             echo "changes=true" >> "$GITEA_OUTPUT"
-            grep -n "feat" .changes > .changes_feat
-            grep -n "fix" .changes > .changes_fix
-            grep -n "dependencies" .changes > .changes_dep
-            grep -n "other" .changes > .changes_other
+            grep -i "feat" .changes >> .changes_feat
+            grep -i "fix" .changes >> .changes_fix
+            grep -i "dependencies" .changes >> .changes_dep
+            grep -i "other" .changes >> .changes_other
           fi
 
       - name: Cancel if no changes
@@ -81,6 +84,7 @@ jobs:
         id: create_changelog
         if: steps.changes.outputs.changes == 'true'
         run: |
+          rm -f .changelog
           if [[ -z $(grep '[^[:space:]]' .changes_feat) ]] ; then
             printf "## 🚀 Features" > .changelog
             cat .changes_feat >> .changelog
