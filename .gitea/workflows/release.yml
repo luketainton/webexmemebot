@@ -39,11 +39,11 @@ jobs:
           LATESTTAG=$(git describe --tags --abbrev=0)
           echo "latesttag=$LATESTTAG" >> "$GITEA_OUTPUT"
 
-  test:
-    name: Unit Test
-    needs: get_latest_tag
-    uses: https://git.tainton.uk/public/webexmemebot/.gitea/workflows/ci.yml@${{ needs.get_latest_tag.outputs.latesttag }}
-    continue-on-error: true
+  # test:
+  #   name: Unit Test
+  #   needs: get_latest_tag
+  #   uses: https://git.tainton.uk/public/webexmemebot/.gitea/workflows/ci.yml@${{ needs.get_latest_tag.outputs.latesttag }}
+  #   continue-on-error: true
 
   create_release:
     name: Create Release
@@ -61,35 +61,40 @@ jobs:
       - name: Changes since last tag
         id: changes
         run: |
-          CHANGES=$(git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline)
-          echo "$CHANGES"
-          $CHANGES_FEAT=$(echo "$CHANGES" | grep -i "feat")
-          $CHANGES_FIX=$(echo "$CHANGES" | grep -i "fix")
-          $CHANGES_DEP=$(echo "$CHANGES" | grep -i "dependencies")
-          $CHANGES_OTHER=$(echo "$CHANGES" | grep -i "other")
-          if [ -z "$CHANGES" ]
-          then
+          git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline >> .changes
+          cat ".changes"
+          if [[ -z $(grep '[^[:space:]]' .changes) ]] ; then
             echo "changes=false" >> "$GITEA_OUTPUT"
           else
             echo "changes=true" >> "$GITEA_OUTPUT"
-            echo $CHANGES_FEAT" >> .changes_feat
-            echo $CHANGES_FIX" >> .changes_fix
-            echo $CHANGES_DEP" >> .changes_dep
-            echo $CHANGES_OTHER" >> .changes_other
+            grep -n "feat" .changes > .changes_feat
+            grep -n "fix" .changes > .changes_fix
+            grep -n "dependencies" .changes > .changes_dep
+            grep -n "other" .changes > .changes_other
           fi
+
+      - name: Cancel if no changes
+        if: steps.changes.outputs.changes == 'false'
+        run: exit 1
 
       - name: Create changelog
         id: create_changelog
+        if: steps.changes.outputs.changes == 'true'
         run: |
-          if test "${{ steps.changes.outputs.changes }}" = "true"
-          then
+          if [[ -z $(grep '[^[:space:]]' .changes_feat) ]] ; then
             printf "## 🚀 Features" > .changelog
             cat .changes_feat >> .changelog
-            printf "\n\n## 🐛 Bug Fixes" >> .changelog
+          fi
+          if [[ -z $(grep '[^[:space:]]' .changes_fix) ]] ; then
+            printf "## 🐛 Bug Fixes" >> .changelog
             cat .changes_fix >> .changelog
-            printf "\n\n## 📦 Dependencies" >> .changelog
+          fi
+          if [[ -z $(grep '[^[:space:]]' .changes_dep) ]] ; then
+            printf "## 📦 Dependencies" >> .changelog
             cat .changes_dep >> .changelog
-            printf "\n\n## 💬 Other" >> .changelog
+          fi
+          if [[ -z $(grep '[^[:space:]]' .changes_other) ]] ; then
+            printf "## 💬 Other" >> .changelog
             cat .changes_other >> .changelog
           fi
 
@@ -112,46 +117,6 @@ jobs:
           skip-on-empty: true
           skip-version-file: true
           skip-tag: true
-
-      # - name: Bump version and push tag
-      #   id: tag_version
-      #   if: steps.changes.outputs.changes == 'true'
-      #   uses: mathieudutour/github-tag-action@v6.2
-      #   with:
-      #     github_token: ${{ gitea.token }}
-      #     default_bump: minor
-      #     # default_bump: false
-
-      # - name: Build Changelog
-      #   uses: mikepenz/release-changelog-builder-action@v4
-      #   id: build_changelog
-      #   env:
-      #     GITHUB_TOKEN: ${{ gitea.token }}
-      #   with:
-      #     platform: "gitea"
-      #     configurationJson: |
-      #       {
-      #         "pr_template": "- #{{TITLE}} ([##{{NUMBER}}](#{{URL}}))",
-      #         "empty_template": "- no changes",
-      #         "categories": [
-      #           {
-      #               "title": "## 💬 Other",
-      #               "labels": ["type/other"]
-      #           },
-      #           {
-      #               "title": "## 📦 Dependencies",
-      #               "labels": ["type/dependencies"]
-      #           },
-      #           {
-      #             "title": "## 🚀 Features",
-      #             "labels": ["type/feature"]
-      #           },
-      #           {
-      #             "title": "## 🐛 Bug Fixes",
-      #             "labels": ["type/bugfix"]
-      #           },
-      #         ]
-      #       }
 
       - name: Create release
         id: create_release
