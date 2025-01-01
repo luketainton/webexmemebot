@@ -68,6 +68,7 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v6
         id: get_next_version
         with:
+          git-url: ${{ gitea.server_url }}
           github-token: ${{ gitea.token }}
           skip-commit: true
           release-count: 1
