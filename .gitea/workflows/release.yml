@@ -16,7 +16,7 @@ jobs:
           echo "User: ${{ gitea.event.comment.user.login }}"
 
       - name: Stop workflow if required conditions are not met
-        if: !contains(gitea.event.issue.number, '436') || !contains(gitea.event.comment.body, '/trigger-release') || !contains(gitea.event.comment.user.login, 'luke')
+        if: ${{ !contains(gitea.event.issue.number, '436') || !contains(gitea.event.comment.body, '/trigger-release') || !contains(gitea.event.comment.user.login, 'luke') }}
         run: exit 1
 
   test:
