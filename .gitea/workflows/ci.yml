@@ -32,10 +32,22 @@ jobs:
           python-version: "${{ vars.PYTHON_VERSION }}"
 
       - name: Setup Poetry
-        run: curl -sSL https://install.python-poetry.org | python3 -
+        uses: abatilo/actions-poetry@v3
+        # run: curl -sSL https://install.python-poetry.org | python3 -
 
       - name: Update PATH
         run: export PATH="/root/.local/bin:$PATH"
+
+      - name: Setup virtual environment
+        run: |
+          /root/.local/bin/poetry config virtualenvs.create true --local
+          /root/.local/bin/poetry config virtualenvs.in-project true --local
+
+      - uses: actions/cache@v3
+        name: Define cache for dependencies
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
 
       - name: Install dependencies
         run: /root/.local/bin/poetry install
