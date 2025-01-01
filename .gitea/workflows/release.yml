@@ -31,9 +31,12 @@ jobs:
       latesttag: ${{ steps.latesttag.outputs.latesttag }}
     steps:
       - uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0
       - name: Get latest tag
         id: latesttag
         run: |
+          git checkout main
           git fetch --tags
           LATESTTAG=$(git -C ${{ gitea.workspace }} describe --tags --abbrev=0)
           echo "latesttag=$LATESTTAG" >> "$GITEA_OUTPUT"
