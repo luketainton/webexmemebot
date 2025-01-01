@@ -19,10 +19,20 @@ jobs:
         if: ${{ !contains(gitea.event.issue.number, '436') || !contains(gitea.event.comment.body, '/trigger-release') || !contains(gitea.event.comment.user.login, 'luke') }}
         run: exit 1
 
+  get_latest_tag:
+    runs-on: ubuntu-latest
+    needs: check_manual_trigger
+    outputs:
+      latesttag: ${{ steps.latesttag.outputs.latesttag }}
+    steps:
+      - name: Get latest tag
+        id: latesttag
+        run: echo "latesttag=$(git describe --tags --abbrev=0)" >> "$GITEA_OUTPUT"
+
   test:
     name: Unit Test
-    needs: check_manual_trigger
-    uses: https://git.tainton.uk/public/webexmemebot/.gitea/workflows/ci.yml@main
+    needs: get_latest_tag
+    uses: https://git.tainton.uk/public/webexmemebot/.gitea/workflows/ci.yml@${{ needs.get_latest_tag.outputs.latesttag }}
 
   create_release:
     name: Create Release
