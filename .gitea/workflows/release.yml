@@ -70,16 +70,12 @@ jobs:
           if [ -z "$CHANGES" ]
           then
             echo "changes=false" >> "$GITEA_OUTPUT"
-            echo "changes_feat=false" >> "$GITEA_OUTPUT"
-            echo "changes_fix=false" >> "$GITEA_OUTPUT"
-            echo "changes_dep=false" >> "$GITEA_OUTPUT"
-            echo "changes_other=false" >> "$GITEA_OUTPUT"
           else
             echo "changes=true" >> "$GITEA_OUTPUT"
-            echo "changes_feat=CHANGES_FEAT" >> "$GITEA_OUTPUT"
-            echo "changes_fix=CHANGES_FIX" >> "$GITEA_OUTPUT"
-            echo "changes_dep=CHANGES_DEP" >> "$GITEA_OUTPUT"
-            echo "changes_other=CHANGES_OTHER" >> "$GITEA_OUTPUT"
+            echo $CHANGES_FEAT" >> .changes_feat
+            echo $CHANGES_FIX" >> .changes_fix
+            echo $CHANGES_DEP" >> .changes_dep
+            echo $CHANGES_OTHER" >> .changes_other
           fi
 
       - name: Create changelog
@@ -87,19 +83,14 @@ jobs:
         run: |
           if test "${{ steps.changes.outputs.changes }}" = "true"
           then
-            cat <<EOF >> changelog.md
-              ## 🚀 Features
-              $CHANGES_FEAT
-
-              ## 🐛 Bug Fixes
-              $CHANGES_FIX
-
-              ## 📦 Dependencies
-              $CHANGES_DEP
-
-              ## 💬 Other
-              $CHANGES_OTHER
-            EOF
+            printf "## 🚀 Features" > .changelog
+            cat .changes_feat >> .changelog
+            printf "\n\n## 🐛 Bug Fixes" >> .changelog
+            cat .changes_fix >> .changelog
+            printf "\n\n## 📦 Dependencies" >> .changelog
+            cat .changes_dep >> .changelog
+            printf "\n\n## 💬 Other" >> .changelog
+            cat .changes_other >> .changelog
           fi
 
       - name: Set server URL
@@ -170,7 +161,7 @@ jobs:
         with:
           tag: ${{ steps.get_next_version.outputs.tag }}
           name: ${{ steps.get_next_version.outputs.tag }}
-          body_path: changelog.md
+          body_path: .changelog
 
       - name: Set success/fail flag
         id: set_flag
