@@ -22,7 +22,7 @@ jobs:
   test:
     name: Unit Test
     needs: check_manual_trigger
-    uses: https://git.tainton.uk/public/webexmemebot/src/branch/main/.gitea/workflows/ci.yml
+    uses: https://git.tainton.uk/public/webexmemebot/.gitea/workflows/ci.yml@main
 
   create_release:
     name: Create Release
