@@ -8,17 +8,18 @@ on:
 jobs:
   check_manual_trigger:
     runs-on: ubuntu-latest
-    if: contains(gitea.event.issue.number, '436') || contains(gitea.event.issue.number, 436) # check if the comments come from issue #436
     steps:
       - name: Allow workflow
-        if: contains(gitea.event.comment.body, '/trigger-release') && contains(gitea.event.comment.user.login, 'luke')
+        if: contains(gitea.event.issue.number, '436')) && contains(gitea.event.comment.body, '/trigger-release') && contains(gitea.event.comment.user.login, 'luke')
         run: exit 0
 
   test:
+    name: Unit Test
     needs: check_manual_trigger
     uses: https://git.tainton.uk/public/webexmemebot/src/branch/main/.gitea/workflows/ci.yml
 
   create_release:
+    name: Create Release
     runs-on: ubuntu-latest
     needs: test
     outputs:
