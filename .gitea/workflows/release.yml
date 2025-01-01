@@ -20,11 +20,13 @@ jobs:
         run: exit 1
 
   get_latest_tag:
+    name: Get latest tag
     runs-on: ubuntu-latest
     needs: check_manual_trigger
     outputs:
       latesttag: ${{ steps.latesttag.outputs.latesttag }}
     steps:
+      - uses: actions/checkout@v4.1.7
       - name: Get latest tag
         id: latesttag
         run: echo "latesttag=$(git describe --tags --abbrev=0)" >> "$GITEA_OUTPUT"
