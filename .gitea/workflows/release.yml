@@ -52,6 +52,7 @@ jobs:
     outputs:
       release_name: ${{ steps.tag_version.outputs.new_tag }}
       success: ${{ steps.set_flag.outputs.success }}
+      srvurl: ${{ steps.set_srvurl.outputs.srvurl }}
     steps:
       - uses: actions/checkout@v4.1.7
         with:
@@ -64,11 +65,17 @@ jobs:
           echo "$CHANGES"
           if [ -z "$CHANGES" ]; then echo "changes=false" >> "$GITEA_OUTPUT"; else echo "changes=true" >> "$GITEA_OUTPUT"; fi
 
+      - name: Set server URL
+        id: set_srvurl
+        run: |
+          SRVURL=$(echo "${{ gitea.server_url }}" | sed 's/https:\/\/\(.*\)/\1/')
+          echo "srvurl=$SRVURL" >> "$GITEA_OUTPUT"
+
       - name: Get next version
         uses: TriPSs/conventional-changelog-action@v6
         id: get_next_version
         with:
-          git-url: ${{ gitea.server_url }}
+          git-url: ${{ steps.set_srvurl.outputs.srvurl }}
           github-token: ${{ gitea.token }}
           skip-commit: true
           release-count: 1
