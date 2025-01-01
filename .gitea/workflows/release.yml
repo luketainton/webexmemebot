@@ -100,6 +100,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ gitea.token }}
         with:
+          platform: "gitea"
           configurationJson: |
             {
               "pr_template": "- #{{TITLE}} ([##{{NUMBER}}](#{{URL}}))",
