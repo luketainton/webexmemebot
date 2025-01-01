@@ -1,4 +1,7 @@
 {
+  "ignorePaths": [
+      "archive/*"
+  ],
   "assignAutomerge": true,
   "assigneesFromCodeOwners": true,
   "dependencyDashboardAutoclose": true,
