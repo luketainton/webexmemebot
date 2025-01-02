@@ -52,7 +52,6 @@ jobs:
     outputs:
       release_name: ${{ steps.tag_version.outputs.new_tag }}
       success: ${{ steps.set_flag.outputs.success }}
-      # srvurl: ${{ steps.set_srvurl.outputs.srvurl }}
     steps:
       - uses: actions/checkout@v4.2.2
         with:
@@ -62,8 +61,18 @@ jobs:
         id: changes
         run: |
           rm -f .changes .changes_feat .changes_fix .changes_dep .changes_other
-          git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline >> .changes
+          sh -c 'git log $(git describe -C ${{ gitea.workspace }} --tags --abbrev=0)..HEAD --no-merges --oneline' >> .changes
           cat .changes
+
+      - name: Upload changelog file
+        uses: actions/upload-artifact@v4
+        with:
+          name: changelog-file
+          path: ./.changes
+          include-hidden-files: true
+
+      - name: Check for changes
+        run: |
           if [[ -z $(grep '[^[:space:]]' .changes) ]] ; then
             echo "changes=false"
             echo "changes=false" >> "$GITEA_OUTPUT"
@@ -135,7 +144,7 @@ jobs:
       - name: Set success/fail flag
         id: set_flag
         if: steps.changes.outputs.changes == 'true'
-        run: if test "${{ steps.changes.outputs.changes }}" = "true"; then echo "success=true" >> "$GITHUB_OUTPUT"; else echo "success=false" >> "$GITHUB_OUTPUT"; fi
+        run: if test "${{ steps.changes.outputs.changes }}" = "true"; then echo "success=true" >> "$GITEA_OUTPUT"; else echo "success=false" >> "$GITEA_OUTPUT"; fi
 
   create_docker:
     name: Create Docker Image
@@ -199,4 +208,4 @@ jobs:
 
       - name: Set success flag
         id: set_flag
-        run: echo "success=true" >> "$GITHUB_OUTPUT"
+        run: echo "success=true" >> "$GITEA_OUTPUT"
