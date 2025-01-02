@@ -164,13 +164,15 @@ jobs:
           strlabels="${{ steps.meta.outputs.labels }}"
           strannotations="${{ steps.meta.outputs.annotations }}"
           readarray -t tags <<<"$strtags"
-          readarray -t labels <<<"$labels"
-          readarray -t annotations <<<"$annotations"
+          readarray -t labels <<<"$strlabels"
+          readarray -t annotations <<<"$strannotations"
           for element in "${tags[@]}"; do bldcmd="$bldcmd --tag \"$element\""; done
           for element in "${labels[@]}"; do bldcmd="$bldcmd --label \"$element\""; done
           for element in "${annotations[@]}"; do bldcmd="$bldcmd --annotation \"$element\""; done
-          echo $bldcmd
-          sh -c "$bldcmd ${{ gitea.workspace }}"
+          bldcmd="$bldcmd ${{ gitea.workspace }}"
+          echo "$bldcmd"
+          echo ""
+          sh -c "$bldcmd"
       
       - name: Push images
         run: |
