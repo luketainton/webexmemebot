@@ -159,10 +159,10 @@ jobs:
           for i in "${{ steps.meta.outputs.tags }}"; do dkrtags="$dkrtags --tag $i"; done
           bldcmd="docker buildx build $dkrannotations $dkrlabels $dkrtags ."
           echo $bldcmd
+          $bldcmd
           unset dkrannotations dkrlabels dkrtags bldcmd
       
       - name: Push images
         run: |
-          readarray -td, tags < <( echo ${{ steps.meta.outputs.tags }} )
           for i in "${{ steps.meta.outputs.tags }}"; do docker push "$i"; done
           unset tags
