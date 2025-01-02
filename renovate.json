@@ -1,35 +1,15 @@
 {
-  "ignorePaths": [
-    "**/.archive/**"
-  ],
   "assignAutomerge": true,
   "assigneesFromCodeOwners": true,
   "dependencyDashboardAutoclose": true,
   "extends": [
     "config:recommended"
   ],
+  "ignorePaths": [
+    "**/.archive/**"
+  ],
   "labels": [
     "type/dependencies"
-  ],
-  "packageRules": [
-    {
-      "labels": [
-        "linting"
-      ],
-      "matchPackageNames": [
-        "/black/",
-        "/pylint/"
-      ]
-    },
-    {
-      "labels": [
-        "unit-tests"
-      ],
-      "matchPackageNames": [
-        "/coverage/",
-        "/pytest/"
-      ]
-    }
   ],
   "platformCommit": "enabled",
   "rebaseWhen": "behind-base-branch",

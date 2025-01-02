@@ -1,4 +1,4 @@
-name: CI
+name: CI w/ Poetry and Docker
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -12,14 +12,15 @@ on:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-poetry-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
 
-      - uses: hadolint/hadolint-action@v3.1.0
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: Dockerfile
           output-file: hadolint.out
@@ -30,57 +31,32 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "${{ vars.PYTHON_VERSION }}"
-
-      - name: Setup Poetry
-        uses: abatilo/actions-poetry@v3
-        # run: curl -sSL https://install.python-poetry.org | python3 -
-
-      - name: Update PATH
-        run: export PATH="/root/.local/bin:$PATH"
-
-      - name: Setup virtual environment
-        run: |
-          /root/.local/bin/poetry config virtualenvs.create true --local
-          /root/.local/bin/poetry config virtualenvs.in-project true --local
-
-      - uses: actions/cache@v3
-        name: Define cache for dependencies
-        with:
-          path: ./.venv
-          key: venv-${{ hashFiles('poetry.lock') }}
+          cache: 'poetry'
 
       - name: Install dependencies
-        run: /root/.local/bin/poetry install
+        run: poetry install
 
       - name: Lint
         run: |
-          /root/.local/bin/poetry run pylint --fail-under=8 --recursive=yes --output-format=parseable --output=lintreport.txt .
+          poetry run pylint --fail-under=8 --recursive=yes --output-format=parseable --output=lintreport.txt app/ tests/
           cat lintreport.txt
 
       - name: Unit Test
         run: |
-          /root/.local/bin/poetry run coverage run -m pytest -v --junitxml=testresults.xml
-          /root/.local/bin/poetry run coverage xml
+          poetry run coverage run -m pytest -v --junitxml=testresults.xml
+          poetry run coverage xml
           sed -i 's@${{ gitea.workspace }}@/github/workspace@g' coverage.xml
 
-      # TEMPORARY - DISABLED DUE TO GITHUB > GITEA MIGRATION
-      # SONARQUBE CLOUD IS CURRENTLY TIGHTLY COUPLED TO GITHUB
       - name: SonarQube Cloud Scan
         uses: SonarSource/sonarqube-scan-action@v4.2.1
-        continue-on-error: true
         env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Snyk Vulnerability Scan
-        uses: snyk/actions/python-3.10@master
-        continue-on-error: true # To make sure that SARIF upload gets called
+        uses: snyk/actions/python@master
+        continue-on-error: true  # Sometimes vulns aren't immediately fixable
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --sarif-file-output=snyk.sarif --all-projects
-
-      # - name: Upload result to GitHub Code Scanning
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: snyk.sarif
+          command: snyk
+          args: test --all-projects
