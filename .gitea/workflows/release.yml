@@ -128,16 +128,15 @@ jobs:
           images: |
             ghcr.io/${{ vars.GHCR_USERNAME }}/webexmemebot
             ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}
-          tags: |
-            type=raw,value=latest
-            type=semver,pattern=v{{version}},value=${{ needs.create_release.outputs.release_name }}
-      
-      - name: Build and push imagse
+          tags: type=semver,pattern=v{{version}},value=${{ needs.create_release.outputs.release_name }}
+
+      - name: Build and push images
         uses: docker/build-push-action@v5
         with:
+          push: true
           build-args: |
             DOCKER_METADATA_OUTPUT_JSON
-      
+
       # - name: Build images
       #   uses: docker/build-push-action@v6
       #   with:
@@ -149,7 +148,7 @@ jobs:
       #       ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ needs.create_release.outputs.release_name }}
       #       ghcr.io/${{ vars.GHCR_USERNAME }}/webexmemebot:latest
       #       ghcr.io/${{ vars.GHCR_USERNAME }}/webexmemebot:${{ needs.create_release.outputs.release_name }}
-      
+
       # - name: Push images
       #   run: |
       #     docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest
