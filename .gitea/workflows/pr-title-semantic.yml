@@ -15,11 +15,11 @@ jobs:
     name: Validate PR Title
     runs-on: ubuntu-latest
     steps:
-      - name: PR Conventional Commit Validation
-        uses: ytanikin/pr-conventional-commits@1.4.0
-        with:
-          task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert"]'
-          add_label: 'false'
+      # - name: PR Conventional Commit Validation
+      #   uses: ytanikin/pr-conventional-commits@1.4.0
+      #   with:
+      #     task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert"]'
+      #     add_label: 'false'
 
       # DOES NOT WORK WITH GITEA
       - uses: amannn/action-semantic-pull-request@v5
