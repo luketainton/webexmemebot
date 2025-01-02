@@ -49,6 +49,7 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     # needs: test
+    needs: get_latest_tag
     outputs:
       release_name: ${{ steps.tag_version.outputs.new_tag }}
       success: ${{ steps.set_flag.outputs.success }}
@@ -61,11 +62,11 @@ jobs:
         id: changes
         run: |
           rm -f .changes .changes_feat .changes_fix .changes_dep .changes_other
-          sh -c 'git log $(git describe -C ${{ gitea.workspace }} --tags --abbrev=0)..HEAD --no-merges --oneline' >> .changes
+          git log $(git describe --tags --abbrev=0)..HEAD --no-merges --oneline >> .changes
           cat .changes
 
       - name: Upload changelog file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: changelog-file
           path: ./.changes
@@ -79,10 +80,10 @@ jobs:
           else
             echo "changes=true"
             echo "changes=true" >> "$GITEA_OUTPUT"
-            grep -i "feat" .changes >> .changes_feat
-            grep -i "fix" .changes >> .changes_fix
-            grep -i "dependencies" .changes >> .changes_dep
-            grep -i "other" .changes >> .changes_other
+            grep -i "feat" .changes >> .changes_feat || true
+            grep -i "fix" .changes >> .changes_fix || true
+            grep -i "dependencies" .changes >> .changes_dep || true
+            grep -i "other" .changes >> .changes_other || true
           fi
 
       - name: Cancel if no changes
