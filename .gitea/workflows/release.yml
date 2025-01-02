@@ -140,11 +140,33 @@ jobs:
             ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}
           tags: type=semver,pattern=v{{version}},value=${{ needs.create_release.outputs.release_name }}
 
-      - name: Build and push images
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          annotations: ${{ steps.meta.outputs.annotations }}
-          labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
+      # - name: Build and push images
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     push: true
+      #     annotations: ${{ steps.meta.outputs.annotations }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     tags: ${{ steps.meta.outputs.tags }}
+      
+      - name: Build images
+        run: |
+          readarray -td, anno < <( echo ${{ steps.meta.outputs.annotations }} )
+          readarray -td, lbls < <( echo ${{ steps.meta.outputs.labels }} )
+          readarray -td, tags < <( echo ${{ steps.meta.outputs.tags }} )
+          dkrannotations=""
+          dkrlabels=""
+          dkrtags=""
+          for i in "${anno[@]}"; do dkrannotations="$dkrannotations --annotation $i"; done
+          for i in "${lbls[@]}"; do dkrlabels="$dkrlabels --label $i"; done
+          for i in "${tags[@]}"; do dkrtags="$dkrtags --tag $i"; done
+          bldcmd="docker buildx build $dkrannotations $dkrlabels $dkrtags ."
+          echo "$bldcmd"
+          $bldcmd
+          unset anno dkrannotations lbls dkrlabels tags dkrtags bldcmd
+      
+      - name: Push images
+        run: |
+          readarray -td, tags < <( echo ${{ steps.meta.outputs.tags }} )
+          for i in "${tags[@]}"; do docker push "$i"; done
+          unset tags
