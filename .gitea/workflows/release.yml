@@ -162,7 +162,7 @@ jobs:
           for i in "${tags[@]}"; do dkrtags="$dkrtags --tag $i"; done
           bldcmd="docker buildx build $dkrannotations $dkrlabels $dkrtags ."
           echo "$bldcmd"
-          $bldcmd
+          sh -c "$bldcmd"
           unset anno dkrannotations lbls dkrlabels tags dkrtags bldcmd
       
       - name: Push images
