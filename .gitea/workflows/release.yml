@@ -135,7 +135,7 @@ jobs:
       - name: Create release
         run: |
           curl -X POST \
-            -u "${{ vars.PACKAGES_REGISTRY_USERNAME }}:${{ vars.PACKAGES_REGISTRY_PASSWORD }}" \
+            -H "Authorization: token ${{ secrets.ACTIONS_TOKEN }}" \
             -H "accept: application/json" \
             -H "Content-Type: application/json" \
             -d "{\"tag_name\": \"${{ steps.get_next_version.outputs.tag }}\", \"name\": \"${{ steps.get_next_version.outputs.tag }}\", \"body\": \"${{ steps.get_next_version.outputs.changelog }}\"}" \
