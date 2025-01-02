@@ -87,7 +87,7 @@ jobs:
           fi
 
       - name: Cancel if no changes
-        if: steps.changes.outputs.changes == 'true'
+        if: steps.changes.outputs.changes == 'false'
         run: exit 1
 
       # - name: Create changelog
