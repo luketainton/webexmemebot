@@ -140,6 +140,12 @@ jobs:
             ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}
           tags: type=semver,pattern=v{{version}},value=${{ needs.create_release.outputs.release_name }}
 
+      - name: Print metadata
+        run: |
+          echo "Annotations: ${{ steps.meta.outputs.annotations }}\n\n"
+          echo "Labels: ${{ steps.meta.outputs.labels }}\n\n"
+          echo "Tags: ${{ steps.meta.outputs.tags }}"
+
       # - name: Build and push images
       #   uses: docker/build-push-action@v5
       #   with:
