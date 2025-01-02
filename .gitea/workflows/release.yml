@@ -151,9 +151,9 @@ jobs:
       
       - name: Build images
         run: |
-          readarray -td, anno < <( echo ${{ steps.meta.outputs.annotations }} )
-          readarray -td, lbls < <( echo ${{ steps.meta.outputs.labels }} )
-          readarray -td, tags < <( echo ${{ steps.meta.outputs.tags }} )
+          readarray -td, anno < <( echo "${{ steps.meta.outputs.annotations }}" )
+          readarray -td, lbls < <( echo "${{ steps.meta.outputs.labels }}" )
+          readarray -td, tags < <( echo "${{ steps.meta.outputs.tags }}" )
           dkrannotations=""
           dkrlabels=""
           dkrtags=""
