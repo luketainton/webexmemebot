@@ -22,13 +22,13 @@ jobs:
           add_label: 'false'
 
       # DOES NOT WORK WITH GITEA
-      # - uses: amannn/action-semantic-pull-request@v5
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
-      #   with:
-      #     requireScope: true
-      #     wip: true
-      #     validateSingleCommit: true
-      #     validateSingleCommitMatchesPrTitle: true
-      #     githubBaseUrl: https://git.tainton.uk/api/v1
-      #     ignoreLabels: ignore-semantic-pull-request
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ gitea.token }}
+        with:
+          requireScope: true
+          wip: true
+          validateSingleCommit: true
+          validateSingleCommitMatchesPrTitle: true
+          githubBaseUrl: https://git.tainton.uk/api/v1
+          ignoreLabels: ignore/semantic-pr-title
