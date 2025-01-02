@@ -159,7 +159,7 @@ jobs:
       
       - name: Build images
         run: |
-          bldcmd="docker buildx build ."
+          bldcmd="docker buildx build"
           strtags="${{ steps.meta.outputs.tags }}"
           strlabels="${{ steps.meta.outputs.labels }}"
           strannotations="${{ steps.meta.outputs.annotations }}"
