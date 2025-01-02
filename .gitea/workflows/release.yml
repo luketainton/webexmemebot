@@ -98,6 +98,16 @@ jobs:
     name: Build Docker Images
     needs: create_release
     steps:
+      - name: Update Docker configuration
+        continue-on-error: true
+        run: |
+          mkdir -p /etc/default
+          mkdir -p /etc/docker
+          touch -a /etc/default/docker
+          touch -a /etc/docker/daemon.json
+          echo "DOCKER_OPTS=\"--insecure-registry ${{ vars.PACKAGES_REGISTRY_URL }}\"" >> /etc/default/docker
+          echo "{\"insecure-registries\": [\"${{ vars.PACKAGES_REGISTRY_URL }}\"]}" > /etc/docker/daemon.json
+
       - name: Check out repository
         uses: actions/checkout@v4
         with:
