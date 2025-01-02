@@ -15,13 +15,20 @@ jobs:
     name: Validate PR Title
     runs-on: ubuntu-latest
     steps:
-      - uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
+      - name: PR Conventional Commit Validation
+        uses: ytanikin/pr-conventional-commits@1.4.0
         with:
-          requireScope: true
-          wip: true
-          validateSingleCommit: true
-          validateSingleCommitMatchesPrTitle: true
-          githubBaseUrl: https://git.tainton.uk/api/v1
-          ignoreLabels: ignore-semantic-pull-request
+          task_types: '["feat","fix","docs","test","ci","refactor","perf","chore","revert"]'
+          add_label: 'false'
+
+      # DOES NOT WORK WITH GITEA
+      # - uses: amannn/action-semantic-pull-request@v5
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITEA_TOKEN }}
+      #   with:
+      #     requireScope: true
+      #     wip: true
+      #     validateSingleCommit: true
+      #     validateSingleCommitMatchesPrTitle: true
+      #     githubBaseUrl: https://git.tainton.uk/api/v1
+      #     ignoreLabels: ignore-semantic-pull-request
