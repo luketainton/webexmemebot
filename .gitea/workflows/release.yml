@@ -133,15 +133,23 @@ jobs:
           skip-tag: true
 
       - name: Create release
-        id: create_release
-        uses: akkuman/gitea-release-action@v1
-        env:
-          NODE_OPTIONS: '--experimental-fetch' # if nodejs < 18
-        with:
-          tag: ${{ steps.get_next_version.outputs.tag }}
-          name: ${{ steps.get_next_version.outputs.tag }}
-          # body_path: .changelog
-          body: ${{ steps.get_next_version.outputs.changelog }}
+        run: |
+          curl -X POST -H "Authorization: token ${{ vars.PACKAGES_REGISTRY_PASSWORD }}" \
+            -H "accept: application/json" \
+            -H "Content-Type: application/json" \
+            -d "{\"tag_name\": \"${{ steps.get_next_version.outputs.tag }}\", \"name\": \"${{ steps.get_next_version.outputs.tag }}\", \"body\": \"${{ steps.get_next_version.outputs.changelog }}\"}" \
+            "${{ gitea.server_url }}/api/v1/repos/${{ gitea.repository }}/releases"
+
+      # - name: Create release
+      #   id: create_release
+      #   uses: akkuman/gitea-release-action@v1
+      #   env:
+      #     NODE_OPTIONS: '--experimental-fetch' # if nodejs < 18
+      #   with:
+      #     tag: ${{ steps.get_next_version.outputs.tag }}
+      #     name: ${{ steps.get_next_version.outputs.tag }}
+      #     # body_path: .changelog
+      #     body: ${{ steps.get_next_version.outputs.changelog }}
 
       - name: Set success/fail flag
         id: set_flag
