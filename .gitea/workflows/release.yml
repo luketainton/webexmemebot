@@ -87,30 +87,30 @@ jobs:
           fi
 
       - name: Cancel if no changes
-        if: steps.changes.outputs.changes == 'false'
+        if: steps.changes.outputs.changes == false
         run: exit 1
 
-      - name: Create changelog
-        id: create_changelog
-        if: steps.changes.outputs.changes == 'true'
-        run: |
-          rm -f .changelog
-          if [[ -z $(grep '[^[:space:]]' .changes_feat) ]] ; then
-            printf "## 🚀 Features" > .changelog
-            cat .changes_feat >> .changelog
-          fi
-          if [[ -z $(grep '[^[:space:]]' .changes_fix) ]] ; then
-            printf "## 🐛 Bug Fixes" >> .changelog
-            cat .changes_fix >> .changelog
-          fi
-          if [[ -z $(grep '[^[:space:]]' .changes_dep) ]] ; then
-            printf "## 📦 Dependencies" >> .changelog
-            cat .changes_dep >> .changelog
-          fi
-          if [[ -z $(grep '[^[:space:]]' .changes_other) ]] ; then
-            printf "## 💬 Other" >> .changelog
-            cat .changes_other >> .changelog
-          fi
+      # - name: Create changelog
+      #   id: create_changelog
+      #   if: steps.changes.outputs.changes == true
+      #   run: |
+      #     rm -f .changelog
+      #     if [[ -z $(grep '[^[:space:]]' .changes_feat) ]] ; then
+      #       printf "## 🚀 Features" > .changelog
+      #       cat .changes_feat >> .changelog
+      #     fi
+      #     if [[ -z $(grep '[^[:space:]]' .changes_fix) ]] ; then
+      #       printf "## 🐛 Bug Fixes" >> .changelog
+      #       cat .changes_fix >> .changelog
+      #     fi
+      #     if [[ -z $(grep '[^[:space:]]' .changes_dep) ]] ; then
+      #       printf "## 📦 Dependencies" >> .changelog
+      #       cat .changes_dep >> .changelog
+      #     fi
+      #     if [[ -z $(grep '[^[:space:]]' .changes_other) ]] ; then
+      #       printf "## 💬 Other" >> .changelog
+      #       cat .changes_other >> .changelog
+      #     fi
 
       - name: Set server URL
         id: set_srvurl
@@ -140,15 +140,68 @@ jobs:
         with:
           tag: ${{ steps.get_next_version.outputs.tag }}
           name: ${{ steps.get_next_version.outputs.tag }}
-          body_path: .changelog
+          # body_path: .changelog
+          body: ${{ steps.get_next_version.outputs.changelog }}
 
       - name: Set success/fail flag
         id: set_flag
         if: steps.changes.outputs.changes == 'true'
         run: if test "${{ steps.changes.outputs.changes }}" = "true"; then echo "success=true" >> "$GITEA_OUTPUT"; else echo "success=false" >> "$GITEA_OUTPUT"; fi
 
-  create_docker:
-    name: Create Docker Image
+  build_docker_ghcr:
+    name: Build GHCR Docker Images
+    needs: create_release
+    if: ${{ needs.create_release.outputs.success == 'true' }}
+    outputs:
+      success: ${{ steps.set_flag.outputs.success }}
+    with:
+        release: ${{ needs.create_release.outputs.release_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: luketainton
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/luketainton/webexmemebot
+          tags: type=semver,pattern=v{{version}},value=${{ inputs.release }}
+      
+      - name: Build and push images
+        id: build_push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ghcr.io/luketainton/webexmemebot:latest
+            ghcr.io/luketainton/webexmemebot:${{ inputs.release }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ghcr.io/luketainton/webexmemebot
+          subject-digest: ${{ steps.build_push.outputs.digest }}
+          push-to-registry: true
+
+      - name: Set success flag
+        id: set_flag
+        run: echo "success=true" >> "$GITEA_OUTPUT"
+
+  build_docker_gitea:
+    name: Build Gitea Docker Images
     needs: create_release
     if: ${{ needs.create_release.outputs.success == 'true' }}
     outputs:
@@ -166,46 +219,23 @@ jobs:
       - name: Log in to Gitea Container Registry
         uses: docker/login-action@v3
         with:
-          registry: git.tainton.uk
-          username: ${{ gitea.actor }}
-          password: ${{ gitea.token }}
+          registry: ${{ vars.PACKAGES_REGISTRY_URL }}
+          username: ${{ vars.PACKAGES_REGISTRY_USERNAME }}
+          password: ${{ vars.PACKAGES_REGISTRY_PASSWORD }}
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: luketainton
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            git.tainton.uk/${{ gitea.repository }}
-            ghcr.io/luketainton/webexmemebot
-          tags: |
-            type=semver,pattern=v{{version}},value=${{ inputs.release }}
-
-      - name: Build and push Docker image
-        id: push
+      - name: Build Gitea image(s)
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
+          push: false
           labels: ${{ steps.meta.outputs.labels }}
           tags: |
-            git.tainton.uk/${{ gitea.repository }}:latest
-            git.tainton.uk/${{ gitea.repository }}:${{ inputs.release }}
-            ghcr.io/luketainton/webexmemebot:latest
-            ghcr.io/luketainton/webexmemebot:${{ inputs.release }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ghcr.io/luketainton/webexmemebot
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+            ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest
+            ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ inputs.release }}
+      
+      - name: Push Gitea image(s)
+        run:
+          docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ inputs.release }}
 
       - name: Set success flag
         id: set_flag
