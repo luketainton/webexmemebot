@@ -6,7 +6,8 @@ on:
     types: [created]
 
 jobs:
-  check_manual_trigger:
+  manual_trigger:
+    name: Manual Trigger Cleanup
     runs-on: ubuntu-latest
     if: ${{ gitea.event_name == 'issue_comment' }}
     steps:
@@ -22,7 +23,9 @@ jobs:
 
       - name: Delete issue comment
         run: |
-          curl -X DELETE -H "Authorization: token ${{ gitea.token }}" "${{ gitea.server_url }}/api/v1/repos/${{ gitea.repository }}/issues/comments/${{ gitea.event.comment.id }}"
+          curl -X DELETE \
+            -H "Authorization: token ${{ gitea.token }}" \
+            "${{ gitea.server_url }}/api/v1/repos/${{ gitea.repository }}/issues/comments/${{ gitea.event.comment.id }}"
 
   # test:
   #   name: Unit Test
@@ -37,7 +40,8 @@ jobs:
       release_name: ${{ steps.tag_version.outputs.new_tag }}
       success: ${{ steps.set_flag.outputs.success }}
     steps:
-      - uses: actions/checkout@v4.2.2
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
 
@@ -105,12 +109,12 @@ jobs:
   build_docker_ghcr:
     name: Build GHCR Docker Images
     needs: create_release
-    with:
-        release: ${{ needs.create_release.outputs.release_name }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.release }}
+          fetch-depth: 0
+          ref: ${{ needs.create_release.outputs.release_name }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -127,7 +131,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/luketainton/webexmemebot
-          tags: type=semver,pattern=v{{version}},value=${{ inputs.release }}
+          tags: type=semver,pattern=v{{version}},value=${{ needs.create_release.outputs.release_name }}
       
       - name: Build and push images
         id: build_push
@@ -138,7 +142,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           tags: |
             ghcr.io/luketainton/webexmemebot:latest
-            ghcr.io/luketainton/webexmemebot:${{ inputs.release }}
+            ghcr.io/luketainton/webexmemebot:${{ needs.create_release.outputs.release_name }}
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
@@ -150,12 +154,12 @@ jobs:
   build_docker_gitea:
     name: Build Gitea Docker Images
     needs: create_release
-    with:
-        release: ${{ needs.create_release.outputs.release_name }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.release }}
+          fetch-depth: 0
+          ref: ${{ needs.create_release.outputs.release_name }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -175,8 +179,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           tags: |
             ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest
-            ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ inputs.release }}
+            ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ needs.create_release.outputs.release_name }}
       
       - name: Push Gitea image(s)
         run:
-          docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ inputs.release }}
+          docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ needs.create_release.outputs.release_name }}
