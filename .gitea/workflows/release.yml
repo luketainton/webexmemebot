@@ -170,5 +170,6 @@ jobs:
             ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ needs.create_release.outputs.release_name }}
       
       - name: Push Gitea image(s)
-        run:
-          docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ needs.create_release.outputs.release_name }}
+        run: |
+          docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest
+          docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ needs.create_release.outputs.release_name }}
