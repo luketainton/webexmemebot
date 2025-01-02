@@ -159,7 +159,7 @@ jobs:
           for i in "${{ steps.meta.outputs.tags }}"; do dkrtags="$dkrtags --tag $i"; done
           bldcmd="docker buildx build $dkrannotations $dkrlabels $dkrtags ."
           echo $bldcmd
-          $bldcmd
+          sh -c "$bldcmd ${{ gitea.workspace }}"
           unset dkrannotations dkrlabels dkrtags bldcmd
       
       - name: Push images
