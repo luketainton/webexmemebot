@@ -142,31 +142,33 @@ jobs:
 
       - name: Print metadata
         run: |
-          echo "Annotations: ${{ steps.meta.outputs.annotations }}\n\n"
-          echo "Labels: ${{ steps.meta.outputs.labels }}\n\n"
+          echo "Annotations: ${{ steps.meta.outputs.annotations }}"
+          echo ""
+          echo "Labels: ${{ steps.meta.outputs.labels }}"
+          echo ""
           echo "Tags: ${{ steps.meta.outputs.tags }}"
 
-      # - name: Build and push images
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     push: true
-      #     annotations: ${{ steps.meta.outputs.annotations }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-      #     tags: ${{ steps.meta.outputs.tags }}
-      
       - name: Build images
-        run: |
-          dkrannotations=""
-          dkrlabels=""
-          dkrtags=""
-          for i in "${{ steps.meta.outputs.annotations }}"; do dkrannotations="$dkrannotations --annotation $i"; done
-          for i in "${{ steps.meta.outputs.labels }}"; do dkrlabels="$dkrlabels --label $i"; done
-          for i in "${{ steps.meta.outputs.tags }}"; do dkrtags="$dkrtags --tag $i"; done
-          bldcmd="docker buildx build $dkrannotations $dkrlabels $dkrtags ."
-          echo $bldcmd
-          sh -c "$bldcmd ${{ gitea.workspace }}"
-          unset dkrannotations dkrlabels dkrtags bldcmd
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          annotations: ${{ steps.meta.outputs.annotations }}
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+      
+      # - name: Build images
+      #   run: |
+      #     dkrannotations=""
+      #     dkrlabels=""
+      #     dkrtags=""
+      #     for i in "${{ steps.meta.outputs.annotations }}"; do dkrannotations="$dkrannotations --annotation $i"; done
+      #     for i in "${{ steps.meta.outputs.labels }}"; do dkrlabels="$dkrlabels --label $i"; done
+      #     for i in "${{ steps.meta.outputs.tags }}"; do dkrtags="$dkrtags --tag $i"; done
+      #     bldcmd="docker buildx build $dkrannotations $dkrlabels $dkrtags ."
+      #     echo $bldcmd
+      #     sh -c "$bldcmd ${{ gitea.workspace }}"
+      #     unset dkrannotations dkrlabels dkrtags bldcmd
       
       - name: Push images
         run: |
