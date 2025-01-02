@@ -94,53 +94,8 @@ jobs:
             -d "{\"tag_name\": \"${{ steps.get_next_version.outputs.tag }}\", \"name\": \"${{ steps.get_next_version.outputs.tag }}\", \"body\": \"${{ steps.get_next_version.outputs.changelog }}\"}" \
             "${{ gitea.server_url }}/api/v1/repos/${{ gitea.repository }}/releases"
 
-  build_docker_ghcr:
-    name: Build GHCR Docker Images
-    needs: create_release
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ needs.create_release.outputs.release_name }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: luketainton
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/luketainton/webexmemebot
-          tags: type=semver,pattern=v{{version}},value=${{ needs.create_release.outputs.release_name }}
-      
-      - name: Build and push images
-        id: build_push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          labels: ${{ steps.meta.outputs.labels }}
-          tags: |
-            ghcr.io/luketainton/webexmemebot:latest
-            ghcr.io/luketainton/webexmemebot:${{ needs.create_release.outputs.release_name }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ghcr.io/luketainton/webexmemebot
-          subject-digest: ${{ steps.build_push.outputs.digest }}
-          push-to-registry: true
-
-  build_docker_gitea:
-    name: Build Gitea Docker Images
+  build_docker:
+    name: Build Docker Images
     needs: create_release
     steps:
       - name: Check out repository
@@ -159,7 +114,23 @@ jobs:
           username: ${{ vars.ACTIONS_USERNAME }}
           password: ${{ secrets.ACTIONS_TOKEN }}
 
-      - name: Build Gitea image(s)
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ vars.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ vars.GHCR_USERNAME }}/webexmemebot
+            ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}
+          tags: type=semver,pattern=v{{version}},value=${{ needs.create_release.outputs.release_name }}
+      
+      - name: Build images
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -168,8 +139,12 @@ jobs:
           tags: |
             ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest
             ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ needs.create_release.outputs.release_name }}
+            ghcr.io/${{ vars.GHCR_USERNAME }}/webexmemebot:latest
+            ghcr.io/${{ vars.GHCR_USERNAME }}/webexmemebot:${{ needs.create_release.outputs.release_name }}
       
-      - name: Push Gitea image(s)
+      - name: Push images
         run: |
           docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:latest
           docker push ${{ vars.PACKAGES_REGISTRY_URL }}/${{ gitea.repository }}:${{ needs.create_release.outputs.release_name }}
+          docker push ghcr.io/${{ vars.GHCR_USERNAME }}/webexmemebot:latest
+          docker push ghcr.io/${{ vars.GHCR_USERNAME }}/webexmemebot:${{ needs.create_release.outputs.release_name }}
