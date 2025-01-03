@@ -2,24 +2,19 @@
   "assignAutomerge": true,
   "assigneesFromCodeOwners": true,
   "dependencyDashboardAutoclose": true,
-  "extends": [
-    "config:recommended"
-  ],
-  "ignorePaths": [
-    "**/.archive/**"
-  ],
-  "labels": [
-    "type/dependencies"
-  ],
+  "extends": ["config:recommended"],
+  "ignorePaths": ["**/.archive/**"],
+  "labels": ["type/dependencies"],
   "platformCommit": "enabled",
   "rebaseWhen": "behind-base-branch",
   "rollbackPrs": true,
   "vulnerabilityAlerts": {
     "commitMessagePrefix": "[SECURITY] ",
     "enabled": true,
-    "labels": [
-      "security"
-    ],
+    "labels": ["security"],
     "prCreation": "immediate"
+  },
+  "lockFileMaintenance": {
+    "enabled": true
   }
 }
