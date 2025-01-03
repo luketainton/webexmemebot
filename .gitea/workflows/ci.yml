@@ -46,13 +46,13 @@ jobs:
 
       - name: Lint
         run: |
-          poetry run pylint --fail-under=8 --recursive=yes --output-format=parseable --output=lintreport.txt app/ tests/
+          uv run pylint --fail-under=8 --recursive=yes --output-format=parseable --output=lintreport.txt app/ tests/
           cat lintreport.txt
 
       - name: Unit Test
         run: |
-          poetry run coverage run -m pytest -v --junitxml=testresults.xml
-          poetry run coverage xml
+          uv run coverage run -m pytest -v --junitxml=testresults.xml
+          uv run coverage xml
           sed -i 's@${{ gitea.workspace }}@/github/workspace@g' coverage.xml
 
       - name: Minimize uv cache
