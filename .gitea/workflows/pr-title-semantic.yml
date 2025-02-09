@@ -7,8 +7,6 @@ on:
       - edited
       - synchronize
       - reopened
-      - labeled
-      - unlabeled
 
 jobs:
   validate:
